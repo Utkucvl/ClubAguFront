@@ -41,6 +41,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
   final TextEditingController _communicationController =
   TextEditingController();
   final TextEditingController _creaternameController = TextEditingController();
+  final TextEditingController _photoUrlController = TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
     return accessToken;
   }
 
-  Future<void> _addClub(String name, String content, String communication, String createrName) async {
+  Future<void> _addClub(String name, String content, String communication, String createrName,String photoUrl) async {
     String? accessToken = await getAccessToken();
     // API endpoint for adding a club
     const String apiUrl = 'http://10.0.2.2:8080/club';
@@ -65,6 +66,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
           'name': name,
           'content': content,
           'communication': communication,
+          'photoUrl':photoUrl
 
         };
 
@@ -91,6 +93,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
           _contentController.clear();
           _communicationController.clear();
           _creaternameController.clear();
+          _photoUrlController.clear();
 
           // Navigate after successful submission
           Navigator.push(
@@ -105,6 +108,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
           _contentController.clear();
           _communicationController.clear();
           _creaternameController.clear();
+          _photoUrlController.clear();
         }
       } catch (e) {
         // Handle any errors that might occur
@@ -206,6 +210,19 @@ class _MyHomePageState extends State<AdminPanelAdd> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 20), // Add space between fields
+                    TextFormField(
+                      controller: _photoUrlController,
+                      decoration: InputDecoration(
+                        labelText: 'Photo Url',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius:
+                          BorderRadius.circular(15.0), // Rounded corners
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 20), // Add space below password field
                     ElevatedButton(
                       onPressed: () {
@@ -213,7 +230,8 @@ class _MyHomePageState extends State<AdminPanelAdd> {
                         String content = _contentController.text;
                         String communication = _communicationController.text;
                         String createrName = _creaternameController.text;
-                        _addClub(name, content, communication, createrName);
+                        String photoUrl = _photoUrlController.text;
+                        _addClub(name, content, communication, createrName,photoUrl);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

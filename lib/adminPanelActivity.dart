@@ -449,6 +449,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -456,5 +457,7 @@ class Club {
         required this.content,
         required this.communication,
         required this.usersId,
-        required this.activities});
+        required this.activities,
+        required this.photoUrl
+      });
 }

@@ -28,7 +28,7 @@ class FilteredClubDetail extends StatefulWidget {
   }
 }
 
-void _showDetailOfActivity(BuildContext context , Activity exactActivity) {
+void _showDetailOfActivity(BuildContext context, Activity exactActivity) {
   showModalBottomSheet(
     context: context,
     builder: (context) {
@@ -75,8 +75,6 @@ void _showDetailOfActivity(BuildContext context , Activity exactActivity) {
   );
 }
 
-
-
 class _ClubDetail extends State<FilteredClubDetail> {
   int _currentIndex = 0;
 
@@ -92,6 +90,7 @@ class _ClubDetail extends State<FilteredClubDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.network(widget.exactClub.photoUrl),
             Text(
               'ID: ${widget.exactClub.id}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -288,6 +287,7 @@ class _MyHomePageState extends State<FilteredClubPage> {
               communication: data['communication'],
               usersId: (data['usersId'] as List).cast<int>(),
               activities: activities,
+              photoUrl: data['photoUrl'],
             );
           }).toList();
 
@@ -565,23 +565,40 @@ class _MyHomePageState extends State<FilteredClubPage> {
                                   ),
                                 );
                               },
-                              child: Stack(
+                              child: Row(
                                 children: [
+                                  // Image on the left side of the card
                                   Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            club.name,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.network(
+                                        club.photoUrl,
+                                        width: 50, // Adjust width as needed
+                                        height: 50, // Adjust height as needed
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  // Details and remove button
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              club.name,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Positioned(
@@ -590,10 +607,13 @@ class _MyHomePageState extends State<FilteredClubPage> {
                                     child: IconButton(
                                       icon: Icon(Icons.remove),
                                       onPressed: () async {
-                                        String? userIdString = await getUserId();
+                                        String? userIdString =
+                                            await getUserId();
                                         if (userIdString != null) {
-                                          int userId = int.tryParse(userIdString) ?? 0;
-                                          int clubId = int.tryParse(club.id) ?? 0;
+                                          int userId =
+                                              int.tryParse(userIdString) ?? 0;
+                                          int clubId =
+                                              int.tryParse(club.id) ?? 0;
                                           _removeClub(userId, clubId);
                                         }
                                       },
@@ -613,34 +633,39 @@ class _MyHomePageState extends State<FilteredClubPage> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
                     ),
-                    children: filteredClubs.isNotEmpty && filteredClubs.length > 0
-                        ? filteredClubs.expand((club) => club.activities.map((activity) {
-                      return Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            _showDetailOfActivity(context, activity);
-                          },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            color: Colors.green,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                activity.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    })).toList()
+                    children: filteredClubs.isNotEmpty &&
+                            filteredClubs.length > 0
+                        ? filteredClubs
+                            .expand((club) => club.activities.map((activity) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        _showDetailOfActivity(
+                                            context, activity);
+                                      },
+                                      child: Card(
+                                        elevation: 4,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        color: Colors.green,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            activity.name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }))
+                            .toList()
                         : [Container()],
                   ),
                 ),
@@ -656,8 +681,8 @@ class _MyHomePageState extends State<FilteredClubPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ActivityDashboard(
-                            title: "Book Application",
-                          )),
+                                title: "Book Application",
+                              )),
                     );
                   }
                   if (_currentIndex == 1) {
@@ -665,8 +690,8 @@ class _MyHomePageState extends State<FilteredClubPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => FilteredClubPage(
-                            title: "Book Application",
-                          )),
+                                title: "Book Application",
+                              )),
                     );
                   }
                   if (_currentIndex == 2) {
@@ -674,8 +699,8 @@ class _MyHomePageState extends State<FilteredClubPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ClubPageOfAdd(
-                            title: "Book Application",
-                          )),
+                                title: "Book Application",
+                              )),
                     );
                   }
                 });
@@ -693,7 +718,6 @@ class _MyHomePageState extends State<FilteredClubPage> {
                   icon: Icon(Icons.home),
                   label: 'All Clubs',
                 ),
-
               ],
             ),
           );
@@ -730,6 +754,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -737,5 +762,6 @@ class Club {
       required this.content,
       required this.communication,
       required this.usersId,
-      required this.activities});
+      required this.activities,
+      required this.photoUrl});
 }

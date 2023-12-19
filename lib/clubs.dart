@@ -46,6 +46,7 @@ class _ClubDetail extends State<ClubDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.network(widget.exactClub.photoUrl),
             Text(
               'ID: ${widget.exactClub.id}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -241,6 +242,7 @@ class _MyHomePageState extends State<ClubPage> {
               communication: data['communication'],
               usersId: (data['usersId'] as List).cast<int>(),
               activities: activities,
+              photoUrl: data['photoUrl'],
             );
           }).toList();
 
@@ -374,15 +376,36 @@ class _MyHomePageState extends State<ClubPage> {
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text(
-                                club.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+                                padding: const EdgeInsets.all(15.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        // Adjust border radius as needed
+                                        child: Image.network(
+                                          club.photoUrl,
+                                          width: 80,
+                                          // Set width and height as needed
+                                          height: 60,
+                                          fit: BoxFit
+                                              .cover, // Adjust the fit as needed
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      club.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           ),
                         ),
                       );
@@ -565,8 +588,8 @@ class _MyHomePageState extends State<ClubPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ActivityDashboard(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 1) {
@@ -574,8 +597,8 @@ class _MyHomePageState extends State<ClubPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => FilteredClubPage(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 2) {
@@ -583,8 +606,8 @@ class _MyHomePageState extends State<ClubPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ClubPageOfAdd(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
           });
@@ -602,7 +625,6 @@ class _MyHomePageState extends State<ClubPage> {
             icon: Icon(Icons.home),
             label: 'All Clubs',
           ),
-
         ],
       ),
     );
@@ -633,6 +655,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -640,5 +663,6 @@ class Club {
       required this.content,
       required this.communication,
       required this.usersId,
-      required this.activities});
+      required this.activities,
+      required this.photoUrl});
 }

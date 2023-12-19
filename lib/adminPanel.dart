@@ -47,6 +47,7 @@ class _ClubDetail extends State<ClubDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.network(widget.exactClub.photoUrl),
             Text(
               'ID: ${widget.exactClub.id}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -242,6 +243,7 @@ class _MyHomePageState extends State<AdminPanel> {
               communication: data['communication'],
               usersId: (data['usersId'] as List).cast<int>(),
               activities: activities,
+              photoUrl: data['photoUrl'],
             );
           }).toList();
 
@@ -400,15 +402,32 @@ class _MyHomePageState extends State<AdminPanel> {
                             );
                           },
                           child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Image added to the left side of the card
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    // Adjust border radius as needed
+                                    child: Image.network(
+                                      club.photoUrl,
+                                      width: 80,
+                                      // Set width and height as needed
+                                      height: 60,
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed
+                                    ),
+                                  ),
+                                ),
+                                // Club name and remove button
+                                Expanded(
+                                  child: Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: Text(
                                       club.name,
@@ -418,15 +437,17 @@ class _MyHomePageState extends State<AdminPanel> {
                                       ),
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.remove),
-                                    onPressed: () {
-                                      removeClubFromUniversity(
-                                          int.parse(club.id));
-                                    },
-                                  ),
-                                ],
-                              )),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.remove),
+                                  onPressed: () {
+                                    removeClubFromUniversity(
+                                        int.parse(club.id));
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -609,6 +630,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -616,5 +638,6 @@ class Club {
       required this.content,
       required this.communication,
       required this.usersId,
-      required this.activities});
+      required this.activities,
+      required this.photoUrl});
 }

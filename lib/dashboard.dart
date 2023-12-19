@@ -11,7 +11,8 @@ import 'package:loginpage/main.dart';
 void main() {
   runApp(const MyApp());
 }
-void _showDetailOfActivity(BuildContext context , Activity exactActivity) {
+
+void _showDetailOfActivity(BuildContext context, Activity exactActivity) {
   showModalBottomSheet(
     context: context,
     builder: (context) {
@@ -58,7 +59,6 @@ void _showDetailOfActivity(BuildContext context , Activity exactActivity) {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -99,11 +99,13 @@ Future<String?> getAccessToken() async {
 class _MyHomePageState extends State<ActivityDashboard> {
   List<Activity> allActivities = [];
   int _currentIndex = 0;
+  List<Club> allClubs = [];
 
   @override
   void initState() {
     super.initState();
     fetchActivities();
+    fetchClubs();
   }
 
   Future<void> _logout() async {
@@ -162,6 +164,73 @@ class _MyHomePageState extends State<ActivityDashboard> {
     }
   }
 
+  Future<void> fetchClubs() async {
+    try {
+      String? accessToken = await getAccessToken();
+      if (accessToken != null) {
+        const String apiUrl = 'http://10.0.2.2:8080/club';
+        http.Response response = await http.get(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': accessToken,
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> clubsData = json.decode(response.body);
+          List<Club> clubs = clubsData.map((data) {
+            List<Activity> activities = (data['activities'] as List)
+                .map((activity) => Activity(
+                      id: activity['id'].toString(),
+                      // Ensure 'id' is converted to a string
+                      name: activity['name'],
+                      place: activity['place'],
+                      date: activity['date'],
+                      content: activity['content'],
+                      clubid: activity['clubid'],
+                    ))
+                .toList();
+
+            return Club(
+              id: data['id'].toString(),
+              name: data['name'],
+              content: data['content'],
+              communication: data['communication'],
+              usersId: (data['usersId'] as List).cast<int>(),
+              activities: activities,
+              photoUrl: data['photoUrl'],
+            );
+          }).toList();
+
+          setState(() {
+            allClubs = clubs;
+          });
+          // Process the clubs list
+        } else {
+          print('Request failed with status: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Club? getClubById(int clubId) {
+    // Search for the club by club ID
+    Club? requiredClub;
+    for (var club in allClubs) {
+      if (int.parse(club.id) == clubId) {
+        requiredClub = club;
+        break;
+      }
+    }
+    return requiredClub;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -204,26 +273,41 @@ class _MyHomePageState extends State<ActivityDashboard> {
                             _showDetailOfActivity(context, activity);
                           },
                           child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Text(
-                                      activity.name,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Row(
+                                    children: [
+                                      // Image widget to display the club photo
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        child: Image.network(
+                                          getClubById(activity.clubid)!.photoUrl,
+                                          width: 50, // Adjust the width as needed
+                                          height: 50, // Adjust the height as needed
+                                          fit: BoxFit.cover, // Adjust the fit as needed
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: 10), // Add spacing between image and text
+                                      Text(
+                                        activity.name,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              )),
+                                ),
+                              ],
+                            ),
+                          )
                         ),
                       );
                     },
@@ -340,8 +424,8 @@ class _MyHomePageState extends State<ActivityDashboard> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ActivityDashboard(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 1) {
@@ -349,8 +433,8 @@ class _MyHomePageState extends State<ActivityDashboard> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => FilteredClubPage(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 2) {
@@ -358,8 +442,8 @@ class _MyHomePageState extends State<ActivityDashboard> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ClubPageOfAdd(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
           });
@@ -377,7 +461,6 @@ class _MyHomePageState extends State<ActivityDashboard> {
             icon: Icon(Icons.home),
             label: 'All Clubs',
           ),
-
         ],
       ),
     );
@@ -408,6 +491,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -415,5 +499,6 @@ class Club {
       required this.content,
       required this.communication,
       required this.usersId,
-      required this.activities});
+      required this.activities,
+      required this.photoUrl});
 }

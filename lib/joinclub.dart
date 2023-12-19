@@ -45,6 +45,7 @@ class _ClubDetail extends State<ClubDetailOfAdd> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.network(widget.exactClub.photoUrl),
             Text(
               'ID: ${widget.exactClub.id}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -238,6 +239,7 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
               communication: data['communication'],
               usersId: (data['usersId'] as List).cast<int>(),
               activities: activities,
+              photoUrl: data['photoUrl'],
             );
           }).toList();
 
@@ -330,7 +332,8 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
         children: allClubs.map((club) {
           return Padding(
-            padding:  const EdgeInsets.symmetric(vertical: 70.0, horizontal: 30.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 70.0, horizontal: 30.0),
             child: Card(
               color: Colors.blue,
               child: Padding(
@@ -338,6 +341,18 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Image on the left side of the card
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        club.photoUrl,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(width: 16), // Adjust spacing as needed
+                    // Club details and add button
                     Expanded(
                       child: InkWell(
                         onTap: () {
@@ -350,8 +365,13 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                             ),
                           );
                         },
-                        child: ListTile(
-                          title: Text(club.name),
+                        child: Text(
+                          club.name,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -363,10 +383,10 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                           int userId = int.tryParse(userIdString) ?? 0;
                           int clubId = int.tryParse(club.id) ?? 0;
                           // Use userId here or perform any other actions
-                          _addClub(userId,
-                              clubId); // Assuming club.id refers to the ID of the current club
+                          _addClub(userId, clubId);
                         }
                       },
+                      color: Colors.white,
                     ),
                   ],
                 ),
@@ -481,8 +501,8 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ActivityDashboard(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 1) {
@@ -490,8 +510,8 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => FilteredClubPage(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
             if (_currentIndex == 2) {
@@ -499,8 +519,8 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ClubPageOfAdd(
-                      title: "Book Application",
-                    )),
+                          title: "Book Application",
+                        )),
               );
             }
           });
@@ -518,7 +538,6 @@ class _MyHomePageState extends State<ClubPageOfAdd> {
             icon: Icon(Icons.home),
             label: 'All Clubs',
           ),
-
         ],
       ),
     );
@@ -549,6 +568,7 @@ class Club {
   final String communication;
   final List<int> usersId;
   final List<Activity> activities;
+  final String photoUrl;
 
   const Club(
       {required this.id,
@@ -556,5 +576,6 @@ class Club {
       required this.content,
       required this.communication,
       required this.usersId,
-      required this.activities});
+      required this.activities,
+      required this.photoUrl});
 }
