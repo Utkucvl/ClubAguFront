@@ -1,16 +1,7 @@
-# loginpage
+It was written in flutter framework using dart language. The http library was used to send requests.
 
-A new Flutter project.
+You can access the codes for the backend (Java-Spring) from the link below:
+https://github.com/Utkucvl/ClubAgu
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For more detailed information about the application, you can access the OneDrive link below:
+https://aguedutr-my.sharepoint.com/personal/utku_cuval_agu_edu_tr/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Futku%5Fcuval%5Fagu%5Fedu%5Ftr%2FDocuments%2FClub%20Agu%20Application&ga=1
