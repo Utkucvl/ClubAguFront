@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme:
-        ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const AdminPanelAdd(title: 'Flutter Demo Home Page'),
@@ -39,7 +39,7 @@ class _MyHomePageState extends State<AdminPanelAdd> {
   final TextEditingController _clubnameController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _communicationController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _creaternameController = TextEditingController();
   final TextEditingController _photoUrlController = TextEditingController();
 
@@ -48,13 +48,15 @@ class _MyHomePageState extends State<AdminPanelAdd> {
       _counter++;
     });
   }
+
   Future<String?> getAccessToken() async {
     final storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: 'accessToken');
     return accessToken;
   }
 
-  Future<void> _addClub(String name, String content, String communication, String createrName,String photoUrl) async {
+  Future<void> _addClub(String name, String content, String communication,
+      String createrName, String photoUrl) async {
     String? accessToken = await getAccessToken();
     // API endpoint for adding a club
     const String apiUrl = 'http://10.0.2.2:8080/club';
@@ -66,49 +68,97 @@ class _MyHomePageState extends State<AdminPanelAdd> {
           'name': name,
           'content': content,
           'communication': communication,
-          'photoUrl':photoUrl
-
+          'photoUrl': photoUrl
         };
 
         // Encode the data to JSON
         String body = json.encode(data);
 
-        // Make POST request
-        http.Response response = await http.post(
-          Uri.parse(apiUrl),
-          headers: <String, String>{
-            'Content-Type': 'application/json',
-            'Authorization': accessToken,
+        // Show confirmation dialog
+        bool confirm = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Adding Confirmation'),
+              content: Text(
+                'Are you sure you want to add the club $name to university',
+                style: TextStyle(fontSize: 15),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true); // User confirmed
+                  },
+                  child: Text('Yes'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // User canceled
+                  },
+                  child: Text('No'),
+                ),
+              ],
+            );
           },
-          body: body,
         );
 
-        // Check the response status code
-        if (response.statusCode == 201) {
-          final storage = FlutterSecureStorage();
-          Map<String, dynamic> responseData = json.decode(response.body);
-
-          // Clear text controllers after a successful request
-          _clubnameController.clear();
-          _contentController.clear();
-          _communicationController.clear();
-          _creaternameController.clear();
-          _photoUrlController.clear();
-
-          // Navigate after successful submission
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AdminPanel(title: "Register Page"),
-            ),
+        if (confirm == true) {
+          // User confirmed, proceed with club addition
+          // Make POST request
+          http.Response response = await http.post(
+            Uri.parse(apiUrl),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+              'Authorization': accessToken,
+            },
+            body: body,
           );
-        } else {
-          print('Request failed with status: ${response.statusCode}');
-          _clubnameController.clear();
-          _contentController.clear();
-          _communicationController.clear();
-          _creaternameController.clear();
-          _photoUrlController.clear();
+
+          // Check the response status code
+          if (response.statusCode == 201) {
+            final storage = FlutterSecureStorage();
+            Map<String, dynamic> responseData = json.decode(response.body);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      '$name named club is added to our university!',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Clear text controllers after a successful request
+            _clubnameController.clear();
+            _contentController.clear();
+            _communicationController.clear();
+            _creaternameController.clear();
+            _photoUrlController.clear();
+
+            // Navigate after successful submission
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AdminPanel(title: "Register Page"),
+              ),
+            );
+          } else {
+            print('Request failed with status: ${response.statusCode}');
+            _clubnameController.clear();
+            _contentController.clear();
+            _communicationController.clear();
+            _creaternameController.clear();
+            _photoUrlController.clear();
+          }
         }
       } catch (e) {
         // Handle any errors that might occur
@@ -117,14 +167,15 @@ class _MyHomePageState extends State<AdminPanelAdd> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text(widget.title),
+        backgroundColor: Color(0xFFB71C1C),
+        title: Text(
+          "ADD CLUB",
+          style: TextStyle(color: Colors.white, fontSize: 20.0),
+        ),
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -138,88 +189,204 @@ class _MyHomePageState extends State<AdminPanelAdd> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.red.shade900,
-                      Colors.red.shade400
-                    ], // Dark red to lighter red gradient
-                  ),
+                  color: Color(0xFFFBE9E7),
                 ),
                 padding: EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    SizedBox(height: 1.0),
                     Text(
-                      'Welcome to request page of adding club to our university , be aware of that these informations will be mailed to rector!!',
+                      'When you enter information, the event will be shared with users',
                       style: TextStyle(
-                        fontSize: 16, // Larger font size
+                        color: Color(0xFF940404),
+                        fontSize: 20, // Larger font size
                         fontWeight: FontWeight.bold, // Bold text
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Club Name ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _clubnameController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20), // Add space between fields
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Content ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _contentController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
-                      controller: _clubnameController,
-                      decoration: InputDecoration(
-                        labelText: 'Club Name',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Communication ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _communicationController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _contentController,
-                      decoration: InputDecoration(
-                        labelText: 'Content',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Creater Name ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _creaternameController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _communicationController,
-                      decoration: InputDecoration(
-                        labelText: 'Communication',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    SizedBox(height: 20),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Photo Url ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _creaternameController,
-                      decoration: InputDecoration(
-                        labelText: 'Creater Name',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _photoUrlController,
-                      decoration: InputDecoration(
-                        labelText: 'Photo Url',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _photoUrlController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -231,27 +398,24 @@ class _MyHomePageState extends State<AdminPanelAdd> {
                         String communication = _communicationController.text;
                         String createrName = _creaternameController.text;
                         String photoUrl = _photoUrlController.text;
-                        _addClub(name, content, communication, createrName,photoUrl);
+                        _addClub(name, content, communication, createrName,
+                            photoUrl);
                       },
                       style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFF940404),
+                        padding: const EdgeInsets.all(15.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              15.0), // Rounded corners for button
+                          borderRadius: BorderRadius.circular(15.0),
                         ),
-                        primary: Colors.white,
-                        // Background color of the button
-                        elevation: 10,
-                        // Elevation, gives a shadow effect
-                        shadowColor: Colors.red,
-                        // Shadow color
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        // Button padding
-                        textStyle: TextStyle(
-                            fontSize: 18), // Text style of the button text
                       ),
-                      child: Text('Add Club To University'),
-                      // Button text
+                      child: const Text(
+                        'Send',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 10,

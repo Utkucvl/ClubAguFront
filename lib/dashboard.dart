@@ -7,6 +7,7 @@ import 'package:loginpage/addClub.dart';
 import 'package:loginpage/filteredclubs.dart';
 import 'package:loginpage/joinclub.dart';
 import 'package:loginpage/main.dart';
+import 'package:loginpage/loginpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,47 +19,93 @@ void _showDetailOfActivity(BuildContext context, Activity exactActivity) {
     builder: (context) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text("Details of Activity: ${exactActivity.name}"),
+          backgroundColor: Color(0xFF940404),
+          title: Text(
+            "Details of Activity ",
+            style: TextStyle(color: Colors.white),
+
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Club Id Of Owner This Activity: ${exactActivity.clubid}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        body: Container(color: Color(0xFFFBE9E7),
+          width:double.maxFinite,
+          height: double.maxFinite,
+
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        'Name:',
+                        style: TextStyle(  color: Color(0xFF940404),fontSize: 20,fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        ' ${exactActivity.name}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+
+                  Row(
+                    children: [
+                      Text(
+                        'Place:',
+                        style: TextStyle(  color: Color(0xFF940404),fontSize: 20,fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        ' ${exactActivity.place}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        'Date:',
+                        style: TextStyle(  color: Color(0xFF940404),fontSize: 20,fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        ' ${exactActivity.date}',
+                        style: TextStyle(fontSize: 20,),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+
+                      'CONTENT',
+                      style: TextStyle(color: Color(0xFF940404),fontSize: 20,fontWeight: FontWeight.bold),
+
+                    ),
+                  ),
+
+                  Expanded(child:SingleChildScrollView(
+                    child: Text(
+                      ' ${exactActivity.content}',
+
+                      style: TextStyle(fontSize: 20,),
+                    ),
+                  ),
+                  ),
+                  SizedBox(height: 16),
+                ],
+
+
               ),
-              SizedBox(height: 8),
-              Text(
-                'Name: ${exactActivity.name}',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Content: ${exactActivity.content}',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Place: ${exactActivity.place}',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Date: ${exactActivity.date}',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height: 16),
-            ],
+            ),
           ),
         ),
       );
     },
   );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -109,18 +156,68 @@ class _MyHomePageState extends State<ActivityDashboard> {
   }
 
   Future<void> _logout() async {
-    final storage = FlutterSecureStorage();
-
-    // Delete userId and accessToken
-    await storage.delete(key: 'userId');
-    await storage.delete(key: 'accessToken');
-
-    // Navigate to MyHomePage
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (BuildContext context) => MyHomePage(title: "Home Page")),
+    // Show confirmation dialog
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log Out Confirmation'),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
     );
+
+    if (confirm == true) {
+      final storage = FlutterSecureStorage();
+
+      // Delete userId and accessToken
+      await storage.delete(key: 'userId');
+      await storage.delete(key: 'accessToken');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(
+                Icons.error,
+                color: Colors.white,
+              ),
+              SizedBox(width: 10),
+              Text(
+                'You have logged out!',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      // Navigate to MyHomePage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MyHomePage(title: "Home Page"),
+        ),
+      );
+    }
   }
 
   Future<void> fetchActivities() async {
@@ -230,238 +327,247 @@ class _MyHomePageState extends State<ActivityDashboard> {
     return requiredClub;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Color(0xFF940404),
+        title: Text("DASHBOARD",
+            style: TextStyle(color: Colors.white, fontSize: 20.0)),
       ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Upcoming Activities',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+      body: Container(
+        color: Color(0xFFFBE9E7),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Upcoming Activities:',
+                        style: TextStyle(
+                          color: Color(0xFF940404),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                    ),
-                    itemCount: allActivities.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final activity = allActivities[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 20.0,
-                          horizontal: 10.0,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            _showDetailOfActivity(context, activity);
-                          },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Row(
-                                    children: [
-                                      // Image widget to display the club photo
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(15.0),
-                                        child: Image.network(
-                                          getClubById(activity.clubid)!.photoUrl,
-                                          width: 50, // Adjust the width as needed
-                                          height: 50, // Adjust the height as needed
-                                          fit: BoxFit.cover, // Adjust the fit as needed
-                                        ),
-                                      ),
-                                      SizedBox(width: 10), // Add spacing between image and text
-                                      Text(
-                                        activity.name,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: allActivities.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final activity = allActivities[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 5.0,
+                            horizontal: 10.0,
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              _showDetailOfActivity(context, activity);
+                            },
+                            child: Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: ListTile(
+                                leading: Image.network(
+                                  getClubById(activity.clubid)!.photoUrl,
+                                  width: 50, // Adjust the width as needed
+                                  height: 50, // Adjust the height as needed
+                                  fit: BoxFit.cover, // Adjust the fit as needed
+                                ),
+                                title: Text(
+                                  activity.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                 ),
-                              ],
+                                subtitle: Text(
+                                  activity.date,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+
+                              ),
                             ),
-                          )
-                        ),
-                      );
-                    },
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
+                ],
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Main Dashboard'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ActivityDashboard(
-                      title: "Book Application",
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.filter_1_outlined),
-              title: Text('Filtered Clubs'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FilteredClubPage(
-                      title: "Book Application",
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('All Clubs'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ClubPageOfAdd(
-                      title: "Book Application",
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Request for adding club to our university'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddClub(
-                      title: "Club Page Of Add",
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Request for adding activity to your club'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddActivity(
-                      title: "Club Page Of Add",
-                    ),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout), // Icon for logout
-              title: Text('Logout'),
-              onTap: () {
-                _logout(); // Call the logout method when tapped
-              },
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ActivityDashboard(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => FilteredClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPageOfAdd(
-                          title: "Book Application",
-                        )),
-              );
-            }
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Dashboard',
+      drawer: Drawer(
+        child: Container(
+          color: Color(0xFFFBE9E7),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                height: 150,
+                child: DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF940404),
+                  ),
+                  child: Text(
+                    'MENU',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.home,
+                  color: Color(0xFF940404),
+                ),
+                title: Text(
+                  'Main Dashboard',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ActivityDashboard(
+                        title: "Book Application",
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.bookmark,
+                  color: Color(0xFF940404),
+                ),
+                title: Text(
+                  'My Clubs',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FilteredClubPage(
+                        title: "Book Application",
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.align_horizontal_left_sharp,
+                  color: Color(0xFF940404),
+                ),
+                title: Text(
+                  'All Clubs',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClubPageOfAdd(
+                        title: "Book Application",
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.add,
+                  color: Color(0xFF940404),
+                ),
+                title: Text(
+                  'Request for adding club',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddClub(
+                        title: "Club Page Of Add",
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.add_box_outlined,
+                  color: Color(0xFF940404),
+                ),
+                title: Text(
+                  'Request for adding activity',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddActivity(
+                        title: "Club Page Of Add",
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  color: Color(0xFF940404),
+                ),
+                // Icon for logout
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                      color: Color(0xFF940404),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                onTap: () {
+                  _logout(); // Call the logout method when tapped
+                },
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.filter_1_outlined),
-            label: 'Filtered Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'All Clubs',
-          ),
-        ],
+        ),
       ),
     );
   }

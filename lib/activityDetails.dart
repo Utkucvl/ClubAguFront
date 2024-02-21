@@ -78,55 +78,7 @@ class _ActivityDetail extends State<ActivityDetail> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => FilteredClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPageOfAdd(
-                          title: "Book Application",
-                        )),
-              );
-            }
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.filter_1_outlined),
-            label: 'Filtered Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'All Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Join a club',
-          ),
-        ],
-      ),
+
     );
   }
 }

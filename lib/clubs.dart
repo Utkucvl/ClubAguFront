@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:loginpage/loginpage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -103,55 +103,6 @@ class _ClubDetail extends State<ClubDetail> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => FilteredClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPageOfAdd(
-                          title: "Book Application",
-                        )),
-              );
-            }
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.filter_1_outlined),
-            label: 'Filtered Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'All Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Join a club',
-          ),
-        ],
       ),
     );
   }
@@ -308,18 +259,68 @@ class _MyHomePageState extends State<ClubPage> {
   }
 
   Future<void> _logout() async {
-    final storage = FlutterSecureStorage();
-
-    // Delete userId and accessToken
-    await storage.delete(key: 'userId');
-    await storage.delete(key: 'accessToken');
-
-    // Navigate to MyHomePage
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (BuildContext context) => MyHomePage(title: "Home Page")),
+    // Show confirmation dialog
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log Out Confirmation'),
+          content: Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
     );
+
+    if (confirm == true) {
+      final storage = FlutterSecureStorage();
+
+      // Delete userId and accessToken
+      await storage.delete(key: 'userId');
+      await storage.delete(key: 'accessToken');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(
+                Icons.error,
+                color: Colors.white,
+              ),
+              SizedBox(width: 10),
+              Text(
+                'You have logged out!',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      // Navigate to MyHomePage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => MyHomePage(title: "Home Page"),
+        ),
+      );
+    }
   }
 
   @override
@@ -577,55 +578,6 @@ class _MyHomePageState extends State<ClubPage> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ActivityDashboard(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => FilteredClubPage(
-                          title: "Book Application",
-                        )),
-              );
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ClubPageOfAdd(
-                          title: "Book Application",
-                        )),
-              );
-            }
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.filter_1_outlined),
-            label: 'Filtered Clubs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'All Clubs',
-          ),
-        ],
       ),
     );
   }

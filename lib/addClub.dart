@@ -1,21 +1,21 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:loginpage/dashboard.dart' as Dashboard; // Alias dashboard.dart
 import 'package:loginpage/register.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { // Define your own MyApp class
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'CLUBS',
       theme: ThemeData(
         colorScheme:
-            ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
+        ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const AddClub(title: 'Flutter Demo Home Page'),
@@ -32,6 +32,7 @@ class AddClub extends StatefulWidget {
   State<AddClub> createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<AddClub> {
   int _counter = 0;
   final TextEditingController _clubnameController = TextEditingController();
@@ -46,20 +47,34 @@ class _MyHomePageState extends State<AddClub> {
     });
   }
 
-  void displayInfos(
-      String name, String content, String communication, String createrName) {
-    print("Name:" + name);
-    print("Content : " + content);
-    print("Communication :" + communication);
-    print("Creater Name : " + createrName);
+  void displayInfos() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Your request for creating club is submitted !! ',
+              style: TextStyle(fontSize: 15),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text(widget.title),
+        backgroundColor: Color(0xFF940404),
+        title: Text('REQUEST FOR CREATING CLUB',
+            style: TextStyle(color: Colors.white, fontSize: 20.0)),
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -73,119 +88,235 @@ class _MyHomePageState extends State<AddClub> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.red.shade900,
-                      Colors.red.shade400
-                    ], // Dark red to lighter red gradient
-                  ),
+                  color: Color(0xFFFBE9E7),
                 ),
                 padding: EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Welcome to request page of adding club to our university , be aware of that these informations will be mailed to rector!!',
+                      textAlign: TextAlign.center,
+                      'Once your information is submitted.The process of establishing the club will be carried out.',
                       style: TextStyle(
-                        fontSize: 16, // Larger font size
+                        color: Color(0xFF940404),
+
+                        fontSize: 20, // Larger font size
                         fontWeight: FontWeight.bold, // Bold text
                       ),
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
-                      controller: _clubnameController,
-                      decoration: InputDecoration(
-                        labelText: 'Club Name',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Club Name ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _clubnameController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _contentController,
-                      decoration: InputDecoration(
-                        labelText: 'Content',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Content",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _contentController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _communicationController,
-                      decoration: InputDecoration(
-                        labelText: 'Communication',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Communication ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _communicationController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _creaternameController,
-                      decoration: InputDecoration(
-                        labelText: 'Creator Name',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Creator Name",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _creaternameController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _creaternameController,
-                      decoration: InputDecoration(
-                        labelText: 'Image Url',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Image Url",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _clubnameController,
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space below password field
                     ElevatedButton(
                       onPressed: () {
-                        String name = _clubnameController.text;
-                        String content = _contentController.text;
-                        String communication = _communicationController.text;
-                        String createrName = _creaternameController.text;
-                        displayInfos(name, content, communication, createrName);
+                        displayInfos();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Dashboard.ActivityDashboard(
+                              title: "Book Application",
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFF940404),
+                        padding: const EdgeInsets.all(15.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              15.0), // Rounded corners for button
+                          borderRadius: BorderRadius.circular(15.0),
                         ),
-                        primary: Colors.white,
-                        // Background color of the button
-                        elevation: 10,
-                        // Elevation, gives a shadow effect
-                        shadowColor: Colors.red,
-                        // Shadow color
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        // Button padding
-                        textStyle: TextStyle(
-                            fontSize: 18), // Text style of the button text
                       ),
-                      child: Text('Send'),
-                      // Button text
+                      child: const Text(
+                        'Send',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 10,

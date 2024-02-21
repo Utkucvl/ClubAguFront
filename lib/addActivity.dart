@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:loginpage/register.dart';
+import 'package:loginpage/dashboard.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme:
-            ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
+        ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AddActivity(title: 'Flutter Demo Home Page'),
+      home: const AddActivity(title: 'ADD ACTIVITY',),
     );
   }
 }
@@ -36,10 +36,10 @@ class _MyHomePageState extends State<AddActivity> {
   int _counter = 0;
   final TextEditingController _activitynameController = TextEditingController();
   final TextEditingController _activityplaceController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _activitydateController = TextEditingController();
   final TextEditingController _activitycontentController =
-      TextEditingController();
+  TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -47,19 +47,33 @@ class _MyHomePageState extends State<AddActivity> {
     });
   }
 
-  void displayInfos(String name, String content, String place, String date) {
-    print("Name:" + name);
-    print("Content : " + content);
-    print("Place :" + place);
-    print("Date : " + date);
+  void displayInfos() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Your request for creating activity is submitted !! ',
+              style: TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text(widget.title),
+        backgroundColor:Color(0xFF940404),
+        title: Text("REQUEST FOR ADDING ACTIVITY",style: TextStyle(color: Colors.white, fontSize: 20.0)),
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -73,119 +87,244 @@ class _MyHomePageState extends State<AddActivity> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.red.shade900,
-                      Colors.red.shade400
-                    ], // Dark red to lighter red gradient
-                  ),
+
+                  color:Color(0xFFFBE9E7),
+
+                  // Dark red to lighter red gradient
+
                 ),
                 padding: EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Welcome to request page of adding activity to your club , be aware of that these informations will be mailed to rector!!',
+                      textAlign:TextAlign.center,
+                      'Once your information is submitted to the admin, your activity will be announced.',
                       style: TextStyle(
-                        fontSize: 16, // Larger font size
+                        color:Color(0xFF940404),
+
+                        fontSize: 20, // Larger font size
                         fontWeight: FontWeight.bold, // Bold text
                       ),
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
-                      controller: _activitynameController,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Name',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Activity Name ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _activitynameController,
+
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _activityplaceController,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Place',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Activity Place ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _activityplaceController,
+
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _activitydateController,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Date',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const SizedBox(height: 20),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Activity Date ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _activitydateController,
+
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),//
+                    const SizedBox(height: 20),// Add space between fields
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Activity Content ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _activitycontentController,
+
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _activitycontentController,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Content',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(15.0), // Rounded corners
+                    const SizedBox(height: 20),// Add space between fields
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              "Id Of Club ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 20), // Add space between fields
-                    TextFormField(
-                      controller: _activitycontentController,
-                      decoration: InputDecoration(
-                        labelText: 'Id Of Club',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(15.0), // Rounded corners
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _activitynameController,
+
+                          decoration: InputDecoration(
+                            labelText: "",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 20), // Add space below password field
                     ElevatedButton(
                       onPressed: () {
-                        String name = _activitynameController.text;
-                        String content = _activitycontentController.text;
-                        String place = _activityplaceController.text;
-                        String date = _activitydateController.text;
-                        displayInfos(name, content, place, date);
+                        displayInfos();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ActivityDashboard(
+                              title: "Book Application",
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFF940404),
+                        padding: const EdgeInsets.all(15.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              15.0), // Rounded corners for button
+                          borderRadius: BorderRadius.circular(15.0),
                         ),
-                        primary: Colors.white,
-                        // Background color of the button
-                        elevation: 10,
-                        // Elevation, gives a shadow effect
-                        shadowColor: Colors.red,
-                        // Shadow color
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        // Button padding
-                        textStyle: TextStyle(
-                            fontSize: 18), // Text style of the button text
                       ),
-                      child: Text('Send'),
-                      // Button text
+                      child: const Text(
+                        'Send',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 10,
